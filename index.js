@@ -6,10 +6,13 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken')
 const port = 3000;
-app.use(bodyParser.urlencoded({ extended: false }));
+
+// middlewares
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json())
 
 // secrets and connection uri
-const uri = process.env.connectionStr;
+const URI = process.env.connectionStr;
 const adminSecret = process.env.adminSecret;
 const userSecret = process.env.userSecret;
 
@@ -36,8 +39,23 @@ const courseSchema = new mongoose.Schema ({
     published: Boolean
 });
 
-mongoose.connect(`mongodb+srv://rinojames007:jamesrino@rinojames007.qxqdx3e.mongodb.net/?retryWrites=true&w=majority`);
+// models
+const User = mongoose.model('User', userSchema);
+const Admin = mongoose.model('Admin', adminsSchema);
+const Course = mongoose.model('Course', courseSchema);
 
-app.listen(3000, () => {
-    console.log("server listening on port 3000");
+app.post('/', (req, res) => {
+    const { username, password } = req.body;
+    const obj = {
+        username: username,
+        password: password
+    }
+    const token = jwt.sign({ username: username }, adminSecret);
+    const og = jwt.verify(token, adminSecret);
+    res.json(og);
 })
+
+mongoose.connect(URI);
+app.listen(port, () => {
+    console.log("server listening on port 3000");
+});
