@@ -1,11 +1,16 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 
+
 const app = express();
+app.use(cors());
+
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const port = 3000;
+
 
 // middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -76,6 +81,10 @@ const userAuthentication = (req, res, next) => {
     }
 }
 
+app.get('/test', (req, res) => {
+    res.json({ message: "connected with backend" });
+})
+
 // admin routes
 app.post('/admin/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -122,6 +131,7 @@ app.delete('/admin/course/edit', adminAuthentication, async (req, res) => {
     await Course.deleteOne({ _id: _id });
     res.json({ message: "course deleted successfully "})
 })
+
 // redundant
 // app.get('/admin/course/view', async (req, res) => {
 //     const course = await Course.find()
