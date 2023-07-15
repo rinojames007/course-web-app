@@ -4,7 +4,6 @@ require('dotenv').config();
 
 
 const app = express();
-app.use(cors());
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -80,10 +79,6 @@ const userAuthentication = (req, res, next) => {
         res.sendStatus(401);
     }
 }
-
-app.get('/test', (req, res) => {
-    res.json({ message: "connected with backend" });
-})
 
 // admin routes
 app.post('/admin/signup', async (req, res) => {
